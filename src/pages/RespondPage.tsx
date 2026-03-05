@@ -103,7 +103,7 @@ export function RespondPage() {
     setSelectedSlot(null);
   }, []);
 
-  const handleSelectSlot = useCallback((dateStr: string, slot: string) => {
+  const handleSelectSlot = useCallback((slot: string) => {
     setSelectedSlot(slot);
   }, []);
 
@@ -429,7 +429,7 @@ export function RespondPage() {
                           key={slot}
                           type="button"
                           className={`respond-slot-btn ${isSelected ? 'selected' : ''}`}
-                          onClick={() => handleSelectSlot(selectedDate, slot)}
+                          onClick={() => handleSelectSlot(slot)}
                           aria-pressed={isSelected}
                           title={slotToLabel(slot)}
                         >

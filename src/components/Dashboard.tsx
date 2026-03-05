@@ -257,11 +257,6 @@ export function Dashboard({ sideTab }: DashboardProps) {
   const [emailModalSuggestedDate, setEmailModalSuggestedDate] = useState<Date | null>(null);
   const [scheduleRequests, setScheduleRequests] = useState<ScheduleRequestRow[]>([]);
   const [deletingRequestId, setDeletingRequestId] = useState<string | null>(null);
-  const [addingResponseId, setAddingResponseId] = useState<string | null>(null);
-  const [editingEvent, setEditingEvent] = useState<ScheduleEvent | null>(null);
-  const [editDate, setEditDate] = useState('');
-  const [editStartTime, setEditStartTime] = useState('09:00');
-  const [editEndTime, setEditEndTime] = useState('10:00');
   const [addJobModalOpen, setAddJobModalOpen] = useState(false);
   const [createEventModalOpen, setCreateEventModalOpen] = useState(false);
   const [isAddingContact, setIsAddingContact] = useState(false);
@@ -310,65 +305,6 @@ export function Dashboard({ sideTab }: DashboardProps) {
     const nextH = (h + 1) % 24;
     return `${String(nextH).padStart(2, '0')}:${String(m ?? 0).padStart(2, '0')}`;
   };
-
-  const applyResponseToCalendar = useCallback(
-    (request: ScheduleRequestRow, response: ScheduleResponseRow) => {
-      const dateStr = response.selectedDate;
-      const startSlot = response.selectedSlot;
-      const endSlot = slotToEndTime(startSlot);
-      const [startH, startM] = startSlot.split(':').map(Number);
-      const [endH, endM] = endSlot.split(':').map(Number);
-      const start = new Date(dateStr + 'T12:00:00');
-      start.setHours(Number.isNaN(startH) ? 9 : startH, Number.isNaN(startM) ? 0 : startM, 0, 0);
-      const end = new Date(dateStr + 'T12:00:00');
-      end.setHours(Number.isNaN(endH) ? 10 : endH, Number.isNaN(endM) ? 0 : endM, 0, 0);
-      const displayName = response.respondentName || request.recipientName || request.to;
-      const eventTitle = request.eventTitle || request.subject;
-      const titleWithName = displayName ? `${eventTitle} with ${displayName}` : eventTitle;
-      setEvents((prev) => [
-        ...prev,
-        {
-          id: `request-${request.id}-${dateStr}-${startSlot}`,
-          title: titleWithName,
-          start,
-          end,
-          color: 'success',
-        },
-      ]);
-      setAddingResponseId(`${request.id}-${dateStr}-${startSlot}`);
-      const confirmTo = response.respondentEmail || request.to;
-      fetch('/api/send-confirmation-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          to: confirmTo,
-          clientName: displayName,
-          dateStr,
-          startTime: startSlot,
-          endTime: endSlot,
-          eventTitle: request.eventTitle || request.subject,
-          subject: request.subject,
-        }),
-      })
-        .then(async (res) => {
-          if (!res.ok) {
-            const data = await res.json().catch(() => ({}));
-            window.alert(`Calendar updated. Confirmation email could not be sent: ${(data as { message?: string }).message || res.status}.`);
-          }
-        })
-        .catch(() => {
-          window.alert('Calendar updated. Confirmation email could not be sent (server unreachable).');
-        });
-      fetch(`/api/schedule-request/${request.id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ archive: true }),
-      })
-        .then(() => fetchScheduleRequests())
-        .finally(() => setAddingResponseId(null));
-    },
-    [setEvents],
-  );
 
   const fetchScheduleRequests = () => {
     fetch('/api/schedule-requests')
@@ -458,41 +394,6 @@ export function Dashboard({ sideTab }: DashboardProps) {
   const deleteEvent = (evt: ScheduleEvent) => {
     if (!window.confirm(`Delete "${evt.title}"?`)) return;
     setEvents((prev) => prev.filter((e) => e.id !== evt.id));
-  };
-
-  const beginEditEvent = (evt: ScheduleEvent) => {
-    setEditingEvent(evt);
-    const start = evt.start instanceof Date ? evt.start : new Date(evt.start);
-    const end = evt.end instanceof Date ? evt.end : new Date(evt.end);
-    setEditDate(format(start, 'yyyy-MM-dd'));
-    setEditStartTime(format(start, 'HH:mm'));
-    setEditEndTime(format(end, 'HH:mm'));
-  };
-
-  const applyEditEvent = () => {
-    if (!editingEvent || !editDate) {
-      setEditingEvent(null);
-      return;
-    }
-    const [startH, startM] = editStartTime.split(':').map(Number);
-    const [endH, endM] = editEndTime.split(':').map(Number);
-    const base = new Date(editDate + 'T12:00:00');
-    const newStart = new Date(base);
-    newStart.setHours(Number.isNaN(startH) ? 9 : startH, Number.isNaN(startM) ? 0 : startM, 0, 0);
-    const newEnd = new Date(base);
-    newEnd.setHours(Number.isNaN(endH) ? 10 : endH, Number.isNaN(endM) ? 0 : endM, 0, 0);
-    setEvents((prev) =>
-      prev.map((e) =>
-        e.id === editingEvent.id
-          ? {
-              ...e,
-              start: newStart,
-              end: newEnd,
-            }
-          : e
-      )
-    );
-    setEditingEvent(null);
   };
 
   useEffect(() => {
@@ -720,11 +621,6 @@ export function Dashboard({ sideTab }: DashboardProps) {
     contactsFileInputRef.current?.click();
   };
 
-  const scheduleEmailRequests = useMemo(
-    () => scheduleRequests.filter((req) => !!(req.to && req.to.trim())),
-    [scheduleRequests],
-  );
-
   const eventLinkRequests = useMemo(
     () => scheduleRequests.filter((req) => !req.to || !req.to.trim()),
     [scheduleRequests],
@@ -948,7 +844,7 @@ export function Dashboard({ sideTab }: DashboardProps) {
 
   const meetingEvents = useMemo<ScheduleEvent[]>(
     () =>
-      meetingRows.map(({ request, response }, idx) => {
+      meetingRows.map(({ request, response }) => {
         const dateStr = response.selectedDate;
         const startSlot = response.selectedSlot;
         const endSlot = slotToEndTime(startSlot);
