@@ -1,0 +1,323 @@
+/* Respond page: recipient chooses date(s) */
+.respond-page {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: var(--bg-primary, #0f0f0f);
+}
+
+.respond-loading {
+  color: var(--text-secondary, #888);
+  text-align: center;
+}
+
+.respond-card {
+  width: 100%;
+  max-width: 520px;
+  background: var(--bg-elevated, #1a1a1a);
+  border-radius: 12px;
+  padding: 1.75rem;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+.respond-card.respond-error,
+.respond-card.respond-success {
+  text-align: center;
+}
+
+.respond-card h1 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem;
+  color: var(--text-primary, #fff);
+}
+
+.respond-event {
+  font-weight: 500;
+  color: var(--accent, #7c9cff);
+  margin: 0 0 0.25rem;
+}
+
+.respond-subject {
+  color: var(--text-secondary, #888);
+  font-size: 0.9rem;
+  margin: 0 0 0.5rem;
+}
+
+.respond-proposed {
+  font-size: 0.85rem;
+  color: var(--text-muted, #666);
+  margin: 0 0 1rem;
+}
+
+.respond-instruction {
+  font-size: 0.875rem;
+  color: var(--text-secondary, #888);
+  margin: 0 0 1rem;
+  line-height: 1.4;
+}
+
+.respond-no-dates {
+  font-size: 0.9rem;
+  color: var(--text-muted, #666);
+  margin: 1rem 0;
+}
+
+.respond-slots {
+  margin: 1.25rem 0;
+  text-align: left;
+}
+
+.respond-date-block {
+  margin-bottom: 1.5rem;
+}
+
+.respond-date-block:last-child {
+  margin-bottom: 0;
+}
+
+.respond-date-heading {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary, #fff);
+  margin: 0 0 0.5rem;
+  padding-bottom: 0.25rem;
+}
+
+.respond-slot-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0.5rem;
+}
+
+.respond-slot-btn {
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--border, #333);
+  background: var(--bg-tertiary, #252525);
+  color: var(--text-primary, #fff);
+  font-size: 0.8125rem;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.respond-slot-btn:hover:not(.taken):not(:disabled) {
+  border-color: var(--accent, #7c9cff);
+  background: rgba(124, 156, 255, 0.12);
+}
+
+.respond-slot-btn.selected {
+  background: var(--accent, #7c9cff);
+  border-color: var(--accent, #7c9cff);
+  color: #fff;
+}
+
+.respond-slot-btn.taken,
+.respond-slot-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  text-decoration: line-through;
+}
+
+.respond-time-panel {
+  margin-top: 1.25rem;
+  text-align: left;
+}
+
+.respond-time-panel-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.respond-time-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary, #fff);
+  margin: 0;
+}
+
+.respond-time-subtitle {
+  font-size: 0.8rem;
+  color: var(--text-muted, #666);
+}
+
+.respond-time-empty {
+  grid-column: 1 / -1;
+  font-size: 0.85rem;
+  color: var(--text-muted, #666);
+  padding: 0.5rem 0;
+}
+
+.respond-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 1rem;
+}
+
+.respond-field-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary, #888);
+}
+
+.respond-input {
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--border, #333);
+  background: var(--bg-tertiary, #252525);
+  color: var(--text-primary, #fff);
+  font-size: 0.9375rem;
+}
+
+.respond-input::placeholder {
+  color: var(--text-muted, #666);
+}
+
+.respond-input:focus {
+  outline: none;
+  border-color: var(--accent, #7c9cff);
+}
+
+.respond-calendar {
+  margin: 1rem 0;
+}
+
+.respond-calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.respond-calendar-nav {
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+}
+
+.respond-calendar-title {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.respond-calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  margin-bottom: 4px;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.respond-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.respond-calendar-day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 8px;
+  background: var(--bg-tertiary, #252525);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.respond-calendar-day.other-month {
+  opacity: 0.4;
+}
+
+.respond-calendar-day.today {
+  outline: 2px solid var(--accent, #7c9cff);
+}
+
+.respond-calendar-day.proposed {
+  background: rgba(124, 156, 255, 0.15);
+}
+
+.respond-calendar-day.disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.respond-calendar-day.selected {
+  background: var(--accent, #7c9cff);
+  color: #fff;
+}
+
+.respond-calendar-day:disabled {
+  opacity: 0.2;
+  cursor: not-allowed;
+}
+
+.respond-summary {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin: 0.5rem 0 1rem;
+}
+
+.respond-submit-error {
+  font-size: 0.875rem;
+  color: #e57373;
+  margin: 0.5rem 0 0;
+  padding: 0.5rem 0.75rem;
+  background: rgba(229, 115, 115, 0.12);
+  border-radius: 8px;
+}
+
+.respond-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.respond-btn.primary {
+  background: var(--accent, #7c9cff);
+  color: #fff;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.respond-btn.primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.respond-link {
+  color: var(--accent, #7c9cff);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.respond-link:hover {
+  text-decoration: underline;
+}
+
+.respond-error p,
+.respond-success p {
+  margin: 0 0 1rem;
+  color: var(--text-secondary);
+}
