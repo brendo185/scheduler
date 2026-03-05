@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { sendScheduleEmail } from "../../../server/scheduler";
+import { sendScheduleEmail } from "../../../server/scheduler-pg";
 
 export async function POST(req: Request) {
   const json = (await req.json()) as {

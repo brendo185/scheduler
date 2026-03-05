@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
-import { respondToScheduleRequest, type ScheduleResponse } from "../../../../../server/scheduler";
+import {
+  respondToScheduleRequest,
+  type ScheduleResponse,
+} from "../../../../../server/scheduler-pg";
 
 interface Params {
   params: { id: string };
@@ -13,7 +16,7 @@ type RespondBody = Partial<ScheduleResponse> & {
 
 export async function POST(req: Request, { params }: Params) {
   const json = (await req.json()) as RespondBody;
-  const { status, body } = respondToScheduleRequest(params.id, json);
+  const { status, body } = await respondToScheduleRequest(params.id, json);
   return NextResponse.json(body, { status });
 }
 

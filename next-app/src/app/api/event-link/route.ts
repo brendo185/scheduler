@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createEventLink } from "../../../server/scheduler";
+import { createEventLink } from "../../../server/scheduler-pg";
 
 export async function POST(req: Request) {
   const json = (await req.json()) as {
@@ -9,7 +9,7 @@ export async function POST(req: Request) {
     startHour?: string;
     endHour?: string;
   };
-  const { status, body } = createEventLink(json);
+  const { status, body } = await createEventLink(json);
   return NextResponse.json(body, { status });
 }
 

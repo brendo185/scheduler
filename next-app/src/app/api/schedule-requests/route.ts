@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { listScheduleRequests } from "../../../server/scheduler";
+import { listScheduleRequests } from "../../../server/scheduler-pg";
 
-export function GET() {
-  const { status, body } = listScheduleRequests();
+export async function GET() {
+  const { status, body } = await listScheduleRequests();
   return NextResponse.json(body, { status });
 }
 

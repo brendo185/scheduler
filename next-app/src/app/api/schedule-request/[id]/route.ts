@@ -3,14 +3,14 @@ import {
   getScheduleRequestById,
   patchScheduleRequest,
   deleteScheduleRequest,
-} from "../../../../server/scheduler";
+} from "../../../../server/scheduler-pg";
 
 interface Params {
   params: { id: string };
 }
 
-export function GET(_req: Request, { params }: Params) {
-  const { status, body } = getScheduleRequestById(params.id);
+export async function GET(_req: Request, { params }: Params) {
+  const { status, body } = await getScheduleRequestById(params.id);
   return NextResponse.json(body, { status });
 }
 
@@ -19,12 +19,12 @@ export async function PATCH(req: Request, { params }: Params) {
     archive?: boolean;
     removeResponse?: { selectedDate: string; selectedSlot: string };
   };
-  const { status, body } = patchScheduleRequest(params.id, json);
+  const { status, body } = await patchScheduleRequest(params.id, json);
   return NextResponse.json(body, { status });
 }
 
-export function DELETE(_req: Request, { params }: Params) {
-  const { status, body } = deleteScheduleRequest(params.id);
+export async function DELETE(_req: Request, { params }: Params) {
+  const { status, body } = await deleteScheduleRequest(params.id);
   return NextResponse.json(body, { status });
 }
 
